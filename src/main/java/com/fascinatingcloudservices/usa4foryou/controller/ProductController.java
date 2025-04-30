@@ -8,6 +8,7 @@ import com.fascinatingcloudservices.usa4foryou.service.CategoryService;
 import com.fascinatingcloudservices.usa4foryou.service.ProductService;
 import com.fascinatingcloudservices.usa4foryou.service.SubCategoryService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import org.modelmapper.ModelMapper;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Tag(name = "Product", description = "Product API")
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
