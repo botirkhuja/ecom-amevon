@@ -1,18 +1,26 @@
 package com.fascinatingcloudservices.usa4foryou.controller;
 
-import com.fascinatingcloudservices.usa4foryou.model.Picture;
-import com.fascinatingcloudservices.usa4foryou.model.Product;
+import com.fascinatingcloudservices.usa4foryou.entity.Picture;
+import com.fascinatingcloudservices.usa4foryou.entity.ProductEntity;
+import com.fascinatingcloudservices.usa4foryou.model.PictureDto;
 import com.fascinatingcloudservices.usa4foryou.service.PictureService;
 import com.fascinatingcloudservices.usa4foryou.service.ProductService;
+
+import jakarta.validation.constraints.NotNull;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
-@RequestMapping("/api/products/{productId}/pictures")
+@RequestMapping("/api/pictures")
 public class PictureController {
 
     private final PictureService pictureService;
@@ -24,26 +32,58 @@ public class PictureController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Picture>> getAllByClientId(@PathVariable String productId) {
-        List<Picture> notes = pictureService.findAllByProductId(productId);
-        return new ResponseEntity<>(notes, HttpStatus.OK);
+    public Flux<Picture> getAllByClientId() {
+        return pictureService
+                .findAll();
     }
 
-    @PostMapping
-    public ResponseEntity<Object> add(@PathVariable String productId, @RequestBody Picture address) {
-        Optional<Product> productOptional = productService.findById(productId);
+    // @GetMapping
+    // public Flux<ResponseEntity<Picture>> getAllByClientId(@PathVariable String
+    // productId) {
+    // return pictureService
+    // .findAllByProductId(productId)
+    // .map(ResponseEntity::ok);
+    // }
 
-        if (productOptional.isEmpty()) {
-            return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
-        }
+    @GetMapping("/{id}")
+    public Mono<ResponseEntity<Picture>> getById(@PathVariable String id) {
+        return pictureService
+                .findById(id)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
 
-        Product product = productOptional.get();
-        address.setProduct(product);  // Set the Client entity, not productId directly
-        try {
-            Picture saved = pictureService.save(address);
-            return new ResponseEntity<>(saved, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/saveUrl")
+    public Mono<Picture> postMethodName(@RequestBody PictureDto pictureDto) {
+        return pictureService.createPicture(convertToEntity(pictureDto));
+    }
+    
+
+    // consumes image/jpeg
+    @PostMapping("/upload")
+    public Mono<Picture> uploadNewImage(
+            // @PathVariable String productId,
+            @RequestPart(name = "productId", required = false) String productId,
+            @RequestPart(name = "storeId", required = false) String storeId,
+            @RequestPart(name = "image") MultipartFile image) {
+        return pictureService.savePicture(image, productId, storeId);
+    }
+
+    private Picture convertToEntity(PictureDto pictureDto) {
+        return Picture.builder()
+                .pictureId(pictureDto.getId())
+                .productId(pictureDto.getProductId())
+                .storeId(pictureDto.getStoreId())
+                .url(pictureDto.getUrl())
+                .build();
+    }
+    private PictureDto convertToDto(Picture picture) {
+        return PictureDto.builder()
+                .id(picture.getPictureId())
+                .productId(picture.getProductId())
+                .storeId(picture.getStoreId())
+                .url(picture.getUrl())
+                .build();
     }
 }

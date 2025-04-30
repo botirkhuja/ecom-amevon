@@ -1,17 +1,16 @@
 package com.fascinatingcloudservices.usa4foryou.service;
 
-import com.fascinatingcloudservices.usa4foryou.model.Client;
-import com.fascinatingcloudservices.usa4foryou.model.ClientAddress;
-import com.fascinatingcloudservices.usa4foryou.model.ClientNote;
+import com.fascinatingcloudservices.usa4foryou.entity.ClientAddressEntity;
+import com.fascinatingcloudservices.usa4foryou.model.ClientAddressDto;
 import com.fascinatingcloudservices.usa4foryou.repository.ClientAddressRepository;
-import com.fascinatingcloudservices.usa4foryou.repository.ClientNoteRepository;
-import com.fascinatingcloudservices.usa4foryou.utils.ExceptionCheckers;
+import com.fascinatingcloudservices.usa4foryou.utils.RandomIdGenerator;
 import com.fascinatingcloudservices.usa4foryou.utils.RetryUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ClientAddressService {
@@ -22,24 +21,39 @@ public class ClientAddressService {
         this.repo = repo;
     }
 
-    public List<ClientAddress> findAll() {
-        return repo.findAll();
-    }
+    // public Flux<ClientAddressDto> findAll() {
+    //     return repo.findAll();
+    // }
 
-    public Optional<ClientAddress> findById(String id) {
-        return repo.findById(id);
-    }
+    // public Mono<ClientAddressDto> findById(String id) {
+    //     return repo.findById(id);
+    // }
 
-    public List<ClientAddress> findAllByClientId(String clientId) {
+    public Flux<ClientAddressEntity> findAllByClientId(String clientId) {
         return repo.findByClientId(clientId);
     }
 
 
-    public ClientAddress save(ClientAddress client) {
-        return RetryUtils.retry(() -> {
-            client.setId(new ClientAddress().getId());
-            return repo.save(client);
-        });
+    // public Mono<ClientAddressDto> save(ClientAddressDto clientAddress) {
+    //     // return RetryUtils.retry(() -> {
+    //         var address = clientAddress
+    //                 .toBuilder()
+    //                 .clientAddressId(
+    //                         RandomIdGenerator.generateRandomId(4)
+    //                 )
+    //                 .isNew(true)
+    //                 .createdAt(LocalDateTime.now())
+    //                 .build();
+    //         return repo.save(address);
+    //     // });
+    // }
+
+    public Mono<ClientAddressEntity> save(ClientAddressEntity clientAddress) {
+        return repo.save(clientAddress);
+    }
+
+    public Flux<ClientAddressEntity> saveAll(List<ClientAddressEntity> clientAddresses) {
+        return repo.saveAll(clientAddresses);
     }
 
     public void deleteById(String clientId) {

@@ -1,16 +1,22 @@
 package com.fascinatingcloudservices.usa4foryou.controller;
 
-import com.fascinatingcloudservices.usa4foryou.model.Client;
+import com.fascinatingcloudservices.usa4foryou.entity.ClientAddressEntity;
+import com.fascinatingcloudservices.usa4foryou.entity.ClientEntity;
+import com.fascinatingcloudservices.usa4foryou.model.ClientDto;
 import com.fascinatingcloudservices.usa4foryou.service.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@Validated
 @RequestMapping("/api/clients")
 public class ClientController {
 
@@ -22,49 +28,47 @@ public class ClientController {
 
     // GET all clients
     @GetMapping
-    public ResponseEntity<List<Client>> getAllClients() {
-        List<Client> clients = clientService.findAll();
-        return new ResponseEntity<>(clients, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public Flux<ClientEntity> getAllClients() {
+        return clientService.findAll();
     }
 
     // GET a single client by ID
     @GetMapping("/{clientId}")
-    public ResponseEntity<Object> getClientById(@PathVariable String clientId) {
-        Optional<Client> client = clientService.findById(clientId);
-        return client
-                .<ResponseEntity<Object>>map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>("Client not found", HttpStatus.NOT_FOUND));
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<ClientEntity> getClientById(@PathVariable String clientId) {
+        return clientService
+                .findById(clientId);
     }
+
+    // @GetMapping("/{clientId}/address")
+    // @ResponseStatus(HttpStatus.OK)
+    // public Flux<ClientAddressEntity> getClientAddressById(@PathVariable String
+    // clientId) {
+    // return clientService
+    // .findAddressesById(clientId);
+    // }x
 
     // POST a new client
     @PostMapping
-    public ResponseEntity<Client> save(@Valid @RequestBody Client client) {
-        Client savedClient = clientService.save(client);
-        return new ResponseEntity<>(savedClient, HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<ClientEntity> save(@Valid @RequestBody ClientDto client) {
+        return clientService
+                .createNewClient(client);
     }
 
     // PUT to update an existing client
     @PutMapping("/{clientId}")
-    public ResponseEntity<Object> updateClient(@PathVariable String clientId, @Valid @RequestBody Client client) {
-        Optional<Client> existingClient = clientService.findById(clientId);
-        if (existingClient.isPresent()) {
-            client.setId(clientId);
-            Client updatedClient = clientService.save(client);
-            return new ResponseEntity<>(updatedClient, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Client not found", HttpStatus.NOT_FOUND);
-        }
+    public Mono<ClientEntity> updateClient(
+            @PathVariable String clientId,
+            @Valid @RequestBody ClientDto client) {
+        return clientService.updateClient(clientId, client);
     }
 
     // DELETE a client by ID
     @DeleteMapping("/{clientId}")
-    public ResponseEntity<String> deleteClient(@PathVariable String clientId) {
-        Optional<Client> existingClient = clientService.findById(clientId);
-        if (existingClient.isPresent()) {
-            clientService.deleteById(clientId);
-            return new ResponseEntity<>("Client deleted successfully", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Client not found", HttpStatus.NOT_FOUND);
-        }
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<Void> deleteClient(@PathVariable String clientId) {
+        return clientService.deleteById(clientId);
     }
 }

@@ -1,37 +1,65 @@
 package com.fascinatingcloudservices.usa4foryou.service;
 
-import com.fascinatingcloudservices.usa4foryou.model.Brand;
-import com.fascinatingcloudservices.usa4foryou.repository.BrandRepo;
-import com.fascinatingcloudservices.usa4foryou.utils.RetryUtils;
+import com.fascinatingcloudservices.usa4foryou.entity.BrandEntity;
+import com.fascinatingcloudservices.usa4foryou.exceptions.NotFoundException;
+import com.fascinatingcloudservices.usa4foryou.model.NameDto;
+import com.fascinatingcloudservices.usa4foryou.repository.BrandRepository;
+import com.fascinatingcloudservices.usa4foryou.utils.RandomIdGenerator;
+
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+
 @Service
 public class BrandService {
 
-    private final BrandRepo repo;
+    private final BrandRepository repo;
 
-    BrandService(BrandRepo repo) {
+    BrandService(BrandRepository repo) {
         this.repo = repo;
     }
 
-    public Flux<Brand> findAll() {
+    public BrandEntity createBrandInstance(String name) {
+        return BrandEntity.builder()
+                .brandId(RandomIdGenerator.generateRandomId(3))
+                .name(name)
+                .isNew(true)
+                .build();
+    }
+
+    public Flux<BrandEntity> findAll() {
         return repo.findAll();
     }
 
-    public Mono<Brand> findById(String id) {
-        return repo.findById(id);
+    public Mono<BrandEntity> findById(String id) {
+        return repo.findById(id)
+                .switchIfEmpty(Mono.error(new NotFoundException("id not found")));
     }
 
-    public Mono<Brand> save(Brand brand) {
-        return RetryUtils.retry(() -> {
-            brand.setBrandId(new Brand().getBrandId());
-            return repo.save(brand);
-        });
+    public Mono<NameDto> findBrandById(String id) {
+        return findById(id)
+                .map(brand -> NameDto.builder()
+                        .id(brand.getBrandId())
+                        .name(brand.getName())
+                        .build());
     }
 
-    public Mono<Brand> findByBrandName(String brandName, boolean caseSensitive) {
+    public Mono<BrandEntity> createNewBrand(NameDto brand) {
+        return repo.save(createBrandInstance(brand.getName()));
+    }
+
+    public Mono<NameDto> updateBrandById(String id, NameDto brand) {
+        return findById(id)
+                .map(existingBrand -> existingBrand.toBuilder().name(brand.getName()).build())
+                .flatMap(repo::save)
+                .thenReturn(brand);
+    }
+
+    public Mono<BrandEntity> findByBrandName(String brandName, boolean caseSensitive) {
         if (caseSensitive) {
             return repo.findByName(brandName);
         } else {

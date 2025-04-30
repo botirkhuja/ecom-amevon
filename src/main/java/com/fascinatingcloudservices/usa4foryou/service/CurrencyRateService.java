@@ -1,6 +1,8 @@
 package com.fascinatingcloudservices.usa4foryou.service;
 
-import com.fascinatingcloudservices.usa4foryou.model.CurrencyRate;
+import com.fascinatingcloudservices.usa4foryou.entity.CurrencyRateEntity;
+import com.fascinatingcloudservices.usa4foryou.exceptions.NotFoundException;
+import com.fascinatingcloudservices.usa4foryou.model.CurrencyRateDto;
 import com.fascinatingcloudservices.usa4foryou.repository.CurrencyRateRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -14,11 +16,12 @@ public class CurrencyRateService {
         this.currencyRateRepository = currencyRateRepository;
     }
 
-    public Flux<CurrencyRate> findAll() {
+    public Flux<CurrencyRateEntity> findAll() {
         return currencyRateRepository.findAll();
     }
 
-    public Mono<CurrencyRate> findByCurrencyId(String currencyCode) {
-        return currencyRateRepository.findByCurrencyRateId(currencyCode);
+    public Mono<CurrencyRateEntity> findByCurrencyId(String currencyCode) {
+        return currencyRateRepository.findByCurrencyRateId(currencyCode)
+                .switchIfEmpty(Mono.error(new NotFoundException("Currency rate not found " + currencyCode)));
     }
 }

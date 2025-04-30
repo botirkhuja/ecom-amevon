@@ -1,8 +1,12 @@
 package com.fascinatingcloudservices.usa4foryou.controller;
 
-import com.fascinatingcloudservices.usa4foryou.model.Brand;
+import com.fascinatingcloudservices.usa4foryou.entity.BrandEntity;
+import com.fascinatingcloudservices.usa4foryou.model.BrandDto;
+import com.fascinatingcloudservices.usa4foryou.model.NameDto;
 import com.fascinatingcloudservices.usa4foryou.service.BrandService;
 import jakarta.validation.Valid;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,58 +14,55 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/api/brands")
 public class BrandController {
 
     private final BrandService brandService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     BrandController(BrandService brandService) {
         this.brandService = brandService;
     }
 
     @GetMapping
-    public Flux<ResponseEntity<Brand>> getAllBrands() {
+    @ResponseStatus(HttpStatus.OK)
+    public Flux<BrandDto> getAllBrands() {
         return brandService.findAll()
-                .map(ResponseEntity::ok);
+        .map(this::convertToDto);
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Brand>> getBrandById(@PathVariable String id) {
-        return brandService.findById(id)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
-
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<NameDto> getBrandById(@PathVariable String id) {
+        return brandService.findBrandById(id);
     }
 
     @PostMapping
-    public Mono<ResponseEntity<Brand>> createBrand(@Valid @RequestBody Brand brand) {
-        return brandService.save(brand)
-                .map(brand1 -> ResponseEntity.status(HttpStatus.CREATED).body(brand1))
-                .defaultIfEmpty(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<BrandEntity> createBrand(@Valid @RequestBody NameDto brandPostRequest) {
+        return brandService.createNewBrand(brandPostRequest);
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<Brand>> updateBrand(@PathVariable String id, @RequestBody Brand brand) {
-        return brandService.findById(id)
-                .flatMap(existingBrand -> {
-                    brand.setBrandId(id);
-                    return brandService.save(brand)
-                            .map(ResponseEntity::ok);
-                })
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<NameDto> updateBrand(@PathVariable String id, @RequestBody NameDto brand) {
+        return brandService.updateBrandById(id, brand);
     }
 
     @GetMapping("/search")
-    public Mono<ResponseEntity<Brand>> searchByName(
+    public Mono<ResponseEntity<BrandEntity>> searchByName(
             @RequestParam String name,
-            @RequestParam(required = false, defaultValue = "false") boolean caseSensitive
-    ) {
+            @RequestParam(required = false, defaultValue = "false") boolean caseSensitive) {
         return brandService.findByBrandName(name, caseSensitive)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    private BrandDto convertToDto(BrandEntity brand) {
+        return modelMapper.map(brand, BrandDto.class);
     }
 
 }

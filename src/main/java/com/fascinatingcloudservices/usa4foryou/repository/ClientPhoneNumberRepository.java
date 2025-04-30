@@ -1,11 +1,12 @@
 package com.fascinatingcloudservices.usa4foryou.repository;
 
-import com.fascinatingcloudservices.usa4foryou.model.ClientPhoneNumber;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
-import java.util.List;
+import com.fascinatingcloudservices.usa4foryou.entity.ClientPhoneNumberEntity;
 
-public interface ClientPhoneNumberRepository extends JpaRepository<ClientPhoneNumber, String> {
+import reactor.core.publisher.Flux;
+
+public interface ClientPhoneNumberRepository extends ReactiveCrudRepository<ClientPhoneNumberEntity, String> {
     // Find all phone numbers by clientId
-    List<ClientPhoneNumber> findByClientId(String clientId);
+    Flux<ClientPhoneNumberEntity> findByClientId(String clientId);
 }

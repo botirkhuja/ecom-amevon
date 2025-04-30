@@ -1,12 +1,12 @@
 package com.fascinatingcloudservices.usa4foryou.service;
 
-import com.fascinatingcloudservices.usa4foryou.model.ClientPhoneNumber;
+import com.fascinatingcloudservices.usa4foryou.entity.ClientPhoneNumberEntity;
 import com.fascinatingcloudservices.usa4foryou.repository.ClientPhoneNumberRepository;
+import com.fascinatingcloudservices.usa4foryou.utils.RandomIdGenerator;
 import com.fascinatingcloudservices.usa4foryou.utils.RetryUtils;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class ClientPhoneNumberService {
@@ -17,24 +17,26 @@ public class ClientPhoneNumberService {
         this.repo = repo;
     }
 
-    public List<ClientPhoneNumber> findAll() {
+    public Flux<ClientPhoneNumberEntity> findAll() {
         return repo.findAll();
     }
 
-    public Optional<ClientPhoneNumber> findById(String id) {
-        return repo.findById(id);
+    public Flux<ClientPhoneNumberEntity> findAllByClientId(String id) {
+        return repo.findByClientId(id);
     }
 
     // Method to find all phone numbers by clientId
-    public List<ClientPhoneNumber> findAllByClientId(String clientId) {
-        return repo.findByClientId(clientId);
+    // public Flux<ClientPhoneNumber> findAllByClientId(String clientId) {
+    //     return repo.findByClientId(clientId);
+    // }
+
+    public Mono<ClientPhoneNumberEntity> save(ClientPhoneNumberEntity client) {
+        client.setClientPhoneNumberId(RandomIdGenerator.generateRandomId(6));
+        return repo.save(client).retry(3);
     }
 
-    public ClientPhoneNumber save(ClientPhoneNumber client) {
-        return RetryUtils.retry(() -> {
-            client.setId(new ClientPhoneNumber().getId());
-            return repo.save(client);
-        });
+    public Flux<ClientPhoneNumberEntity> saveAll(Iterable<ClientPhoneNumberEntity> clients) {
+        return repo.saveAll(clients);
     }
 
     public void deleteById(String clientId) {

@@ -4,9 +4,8 @@ import com.fascinatingcloudservices.usa4foryou.model.ClientSocialAccount;
 import com.fascinatingcloudservices.usa4foryou.repository.ClientSocialAccountRepository;
 import com.fascinatingcloudservices.usa4foryou.utils.RetryUtils;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class ClientSocialAccountService {
@@ -17,20 +16,20 @@ public class ClientSocialAccountService {
         this.repo = repo;
     }
 
-    public List<ClientSocialAccount> findAll() {
+    public Flux<ClientSocialAccount> findAll() {
         return repo.findAll();
     }
 
-    public Optional<ClientSocialAccount> findById(String id) {
+    public Mono<ClientSocialAccount> findById(String id) {
         return repo.findById(id);
     }
 
-    public List<ClientSocialAccount> findAllByClientId(String clientId) {
-        return repo.findByClientId(clientId);
-    }
+    // public Flux<ClientSocialAccount> findAllByClientId(String clientId) {
+    //     return repo.findByClientId(clientId);
+    // }
 
 
-    public ClientSocialAccount save(ClientSocialAccount client) {
+    public Mono<ClientSocialAccount> save(ClientSocialAccount client) {
         return RetryUtils.retry(() -> {
             client.setId(new ClientSocialAccount().getId());
             return repo.save(client);

@@ -1,14 +1,15 @@
 package com.fascinatingcloudservices.usa4foryou.repository;
 
-import com.fascinatingcloudservices.usa4foryou.model.Category;
-import com.fascinatingcloudservices.usa4foryou.model.ClientAddress;
-import com.fascinatingcloudservices.usa4foryou.model.Picture;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
+
+import com.fascinatingcloudservices.usa4foryou.entity.Picture;
+
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
 @Repository
-public interface PictureRepository extends JpaRepository<Picture, String> {
-    List<Picture> findByProductProductId(String productId);
+public interface PictureRepository extends ReactiveCrudRepository<Picture, String> {
+    Flux<Picture> findByProductId(String productId);
 }

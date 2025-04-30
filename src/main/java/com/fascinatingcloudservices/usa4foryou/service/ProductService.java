@@ -1,45 +1,54 @@
 package com.fascinatingcloudservices.usa4foryou.service;
 
-import com.fascinatingcloudservices.usa4foryou.model.Picture;
-import com.fascinatingcloudservices.usa4foryou.model.Product;
-import com.fascinatingcloudservices.usa4foryou.repository.ProductRepo;
-import com.fascinatingcloudservices.usa4foryou.utils.ExceptionCheckers;
+import com.fascinatingcloudservices.usa4foryou.entity.ProductEntity;
+import com.fascinatingcloudservices.usa4foryou.exceptions.NotFoundException;
+import com.fascinatingcloudservices.usa4foryou.repository.ProductRepository;
+import com.fascinatingcloudservices.usa4foryou.utils.RandomIdGenerator;
 import com.fascinatingcloudservices.usa4foryou.utils.RetryUtils;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.Optional;
-
-@Getter
 @Service
 public class ProductService {
 
     @Autowired
-    ProductRepo repo;
+    ProductRepository repo;
 
-    public List<Product> getProducts() {
-        return repo.findAll();
+    public Flux<ProductEntity> getProducts() {
+        return repo.findByIsDeletedFalse();
     }
 
-    public Product save(Product product) {
-        return RetryUtils.retry(() -> {
-            product.setProductId(new Product().getProductId());
-            return repo.save(product);
-        });
+    public Mono<ProductEntity> insertNewProduct(ProductEntity product) {
+        ProductEntity productEntity = product.toBuilder()
+                .productId(RandomIdGenerator.generateRandomId(8))
+                .isNew(true)
+                .build();
+        return repo.save(productEntity);
     }
 
-    public Optional<Product> findById(String productId) {
-        return repo.findById(productId);
+    public Mono<ProductEntity> findById(String productId) {
+        return RetryUtils.retry(() -> repo.findById(productId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Product not found " + productId)))
+
+        );
     }
 
-    public Optional<Product> findByName(String productName, boolean caseSensitive) {
+    public Mono<ProductEntity> findByName(String productName, boolean caseSensitive) {
         if (caseSensitive) {
             return repo.findByName(productName);
         } else {
             return repo.findByNameContainingIgnoreCase(productName);
         }
+    }
+
+    public Mono<ProductEntity> deleteProductById(String productId) {
+        return findById(productId)
+                .map(product -> product.toBuilder()
+                        .isDeleted(true)
+                        .build())
+                .flatMap(repo::save)
+                .switchIfEmpty(Mono.error(new NotFoundException("Product not found " + productId)));
     }
 }

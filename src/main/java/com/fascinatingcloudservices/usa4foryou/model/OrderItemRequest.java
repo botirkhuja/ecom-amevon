@@ -1,6 +1,5 @@
 package com.fascinatingcloudservices.usa4foryou.model;
 
-import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;

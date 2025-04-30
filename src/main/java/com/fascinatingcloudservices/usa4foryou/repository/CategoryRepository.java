@@ -1,9 +1,10 @@
 package com.fascinatingcloudservices.usa4foryou.repository;
 
-import com.fascinatingcloudservices.usa4foryou.model.Category;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 
+import com.fascinatingcloudservices.usa4foryou.entity.CategoryEntity;
+
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, String> {
+public interface CategoryRepository extends ReactiveCrudRepository<CategoryEntity, String> {
 }

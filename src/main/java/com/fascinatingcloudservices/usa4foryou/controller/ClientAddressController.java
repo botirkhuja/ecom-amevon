@@ -1,15 +1,13 @@
 package com.fascinatingcloudservices.usa4foryou.controller;
 
-import com.fascinatingcloudservices.usa4foryou.model.Client;
-import com.fascinatingcloudservices.usa4foryou.model.ClientAddress;
+import com.fascinatingcloudservices.usa4foryou.entity.ClientAddressEntity;
+import com.fascinatingcloudservices.usa4foryou.model.ClientAddressDto;
 import com.fascinatingcloudservices.usa4foryou.service.ClientAddressService;
 import com.fascinatingcloudservices.usa4foryou.service.ClientService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/clients/{clientId}/addresses")
@@ -24,23 +22,19 @@ public class ClientAddressController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ClientAddress>> getAllByClientId(@PathVariable String clientId) {
-        List<ClientAddress> notes = clientAddressService.findAllByClientId(clientId);
-        return new ResponseEntity<>(notes, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public Flux<ClientAddressEntity> getAllByClientId(@PathVariable String clientId) {
+        return clientAddressService.findAllByClientId(clientId);
     }
 
-    @PostMapping
-    public ResponseEntity<Object> add(@PathVariable String clientId, @RequestBody ClientAddress address) {
-        Optional<Client> clientOptional = clientService.findById(clientId);
-
-        if (clientOptional.isEmpty()) {
-            return new ResponseEntity<>("Client not found", HttpStatus.NOT_FOUND);
-        }
-
-        Client client = clientOptional.get();
-        address.setClient(client);  // Set the Client entity, not clientId directly
-        ClientAddress savedAddress = clientAddressService.save(address);
-
-        return new ResponseEntity<>(savedAddress, HttpStatus.CREATED);
-    }
+    // @PostMapping
+    // @ResponseStatus(HttpStatus.CREATED)
+    // public Mono<ClientAddressEntity> add(@PathVariable String clientId, @RequestBody ClientAddressDto address) {
+    //     return clientService
+    //             .findById(clientId)
+    //             .flatMap(client -> {
+    //                 var address1 = address.toBuilder().clientId(client.getId()).build();
+    //                 return clientAddressService.save(address1);
+    //             });
+    // }
 }
