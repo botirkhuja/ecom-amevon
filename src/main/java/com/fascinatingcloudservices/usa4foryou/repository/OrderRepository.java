@@ -1,7 +1,9 @@
 package com.fascinatingcloudservices.usa4foryou.repository;
 
-import com.fascinatingcloudservices.usa4foryou.model.Order;
+import com.fascinatingcloudservices.usa4foryou.entity.OrderEntity;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface OrderRepository extends ReactiveCrudRepository<Order, String> {
+@Repository
+public interface OrderRepository extends ReactiveCrudRepository<OrderEntity, String> {
 }

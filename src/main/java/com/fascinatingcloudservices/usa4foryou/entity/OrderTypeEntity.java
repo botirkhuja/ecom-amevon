@@ -1,6 +1,6 @@
 package com.fascinatingcloudservices.usa4foryou.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -18,24 +18,28 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-@Table(name = "discounts")
-public class DiscountEntity extends EntitySharedProperties implements Persistable<String> {
+@Table(name = "order_types")
+public class OrderTypeEntity implements Persistable<String> {
+
   @Id
-  private String discountId;
-  private String discountCurrencyId;
-  private Double discountAmount;
+  private String orderTypeId;
 
-  @Transient
-  private boolean isNew;
+    private String name;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private Boolean isDeleted;
 
-  @Override
-  public String getId() {
-    return this.discountId;
-  }
+    @Transient
+    private boolean isNew;
 
-  @Override
-  @Transient
-  public boolean isNew() {
-    return this.isNew;
-  }
+    @Override
+    public String getId() {
+        return orderTypeId;
+    }
+
+    @Override
+    @Transient
+    public boolean isNew() {
+        return this.isNew;
+    }
 }

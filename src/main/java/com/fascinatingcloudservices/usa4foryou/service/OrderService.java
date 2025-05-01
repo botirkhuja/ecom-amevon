@@ -1,5 +1,6 @@
 package com.fascinatingcloudservices.usa4foryou.service;
 
+import com.fascinatingcloudservices.usa4foryou.entity.OrderEntity;
 import com.fascinatingcloudservices.usa4foryou.model.*;
 import com.fascinatingcloudservices.usa4foryou.repository.OrderRepository;
 import com.fascinatingcloudservices.usa4foryou.utils.RandomIdGenerator;
@@ -31,39 +32,39 @@ public class OrderService {
         this.currencyRateService = currencyRateService;
     }
 
-    public Flux<Order> getAllOrders() {
+    public Flux<OrderEntity> getAllOrders() {
         return orderRepository.findAll();
     }
 
-    public Mono<Order> getOrderById(String orderId) {
-        return orderRepository.findById(orderId);
-    }
+    // public Mono<Order> getOrderById(String orderId) {
+    //     return orderRepository.findById(orderId);
+    // }
 
-    public Mono<Order> createOrder(List<OrderItem> orderItems, ClientDto client) {
-        return Mono.just(
-                Order.builder()
-//                        .client(client)
-                        .orderDate(Timestamp.from(Instant.now()))
-                        .createdAt(Timestamp.from(Instant.now()))
-//                        .orderItems(orderItems)
-                        .build()
-        )
-                .map(this::addOrderId);
-    }
+//     public Mono<Order> createOrder(List<OrderItem> orderItems, ClientDto client) {
+//         return Mono.just(
+//                 Order.builder()
+// //                        .client(client)
+//                         .orderDate(Timestamp.from(Instant.now()))
+//                         .createdAt(Timestamp.from(Instant.now()))
+// //                        .orderItems(orderItems)
+//                         .build()
+//         )
+//                 .map(this::addOrderId);
+//     }
 
-    @Transactional
-    public Mono<Order> save(Order order) {
-            var savedData = orderRepository.save(order);
-            return savedData;
-//        return RetryUtils.retry(() -> order.flatMap(orderRepository::save));
-    }
+    // @Transactional
+//     public Mono<Order> save(Order order) {
+//             var savedData = orderRepository.save(order);
+//             return savedData;
+// //        return RetryUtils.retry(() -> order.flatMap(orderRepository::save));
+//     }
 
-    public Order attachOrderToOrderItems(Order order) {
-        for (OrderItem item : order.getOrderItems()) {
-            item.setOrder(order);
-        }
-        return order;
-    }
+    // public Order attachOrderToOrderItems(Order order) {
+    //     for (OrderItem item : order.getOrderItems()) {
+    //         item.setOrder(order);
+    //     }
+    //     return order;
+    // }
 
     // public Flux<OrderItem> convertOrderItemsRequestIntoOrderItems(List<OrderItemRequest> orderItemsRequest) {
     //     return Flux.fromIterable(orderItemsRequest)
@@ -79,16 +80,16 @@ public class OrderService {
 
     // }
 
-    private Order addOrderId(Order order) {
-        return order.toBuilder().orderId(RandomIdGenerator.generateRandomId(5)).build();
-    }
+    // private Order addOrderId(Order order) {
+    //     return order.toBuilder().orderId(RandomIdGenerator.generateRandomId(5)).build();
+    // }
 
-    private Order addOrderDate(Order order) {
-        return order.toBuilder()
-                .orderDate(Timestamp.from(Instant.now()))
-                .createdAt(Timestamp.from(Instant.now()))
-                .build();
-    }
+    // private Order addOrderDate(Order order) {
+    //     return order.toBuilder()
+    //             .orderDate(Timestamp.from(Instant.now()))
+    //             .createdAt(Timestamp.from(Instant.now()))
+    //             .build();
+    // }
 
     // public Order updateOrderTotalPrice(Order order) {
     //     return calculateOrderTotalPrice(order);

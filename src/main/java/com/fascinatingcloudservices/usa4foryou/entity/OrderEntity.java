@@ -18,19 +18,29 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-@Table(name = "discounts")
-public class DiscountEntity extends EntitySharedProperties implements Persistable<String> {
+@Table(name = "orders")
+public class OrderEntity extends EntitySharedProperties implements Persistable<String> {
   @Id
-  private String discountId;
-  private String discountCurrencyId;
-  private Double discountAmount;
+  private String orderId;
+  private String clientId;
+  private Timestamp orderDate;
+  private Double totalPrice;
+  private String orderDiscountId;
+  private String currencyRateId;
+
+  private String shippingAddressId;
+  private Double shippingFee;
+  private String contactPhoneNumberId;
+  private String orderTypeId;
+  private Double taxAmount;
+  private String storeId;
 
   @Transient
   private boolean isNew;
 
   @Override
   public String getId() {
-    return this.discountId;
+    return this.orderId;
   }
 
   @Override
