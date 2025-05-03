@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ServerWebInputException;
+import org.springframework.dao.DuplicateKeyException;
 
 import reactor.core.publisher.Mono;
 
@@ -142,5 +143,15 @@ public class GlobalExceptionHandler {
         response.put("error", "Database Error");
         response.put("message", e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<Map<String, Object>> handleDuplicateKeyException(Exception e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", System.currentTimeMillis());
+        response.put("status", HttpStatus.CONFLICT.value());
+        response.put("error", "Duplicate Key Error");
+        response.put("message", e.getCause().getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 }

@@ -4,6 +4,7 @@ import com.fascinatingcloudservices.usa4foryou.entity.NoteEntity;
 import com.fascinatingcloudservices.usa4foryou.model.ClientDto;
 import com.fascinatingcloudservices.usa4foryou.model.NoteDto;
 import com.fascinatingcloudservices.usa4foryou.service.NoteService;
+import com.fascinatingcloudservices.usa4foryou.utils.NoteMapper;
 import com.fascinatingcloudservices.usa4foryou.service.ClientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +29,10 @@ public class NoteController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Flux<NoteEntity> getAll() {
-        return noteService.findAll();
+    public Flux<NoteDto> getAll() {
+        return noteService
+            .findAll()
+            .map(NoteMapper::convertToDto);
     }
 
     @GetMapping("/client/{clientId}")

@@ -53,19 +53,20 @@ public class ClientService {
 
     @Transactional
     public Mono<ClientEntity> createNewClient(ClientDto client) {
+        var clientId = Optional.ofNullable(client.getId()).orElse(RandomIdGenerator.generateRandomId(20));
         ClientEntity clientEntity = ClientEntity.builder()
                 .name(client.getName())
-                .clientId(RandomIdGenerator.generateRandomId(20))
+                .clientId(clientId)
                 .build();
 
         return clientRepository
                 .save(clientEntity)
-                .map(clientEntity1 -> converClientAddressesDtoToEntity(getClientAddressesList(client),
+                .map(clientEntity1 -> converToClientAddressesEntityList(getClientAddressesList(client),
                         clientEntity1.getClientId()))
                 .flatMapMany(clientAddresses -> {
                     return clientAddressService.saveAll(clientAddresses);
                 })
-                .map(x -> convertClientPhoneNumbersDtoToEntity(getClientPhoneNumberssList(client),
+                .map(x -> convertToPhoneNumberEntityList(getClientPhoneNumberssList(client),
                         clientEntity.getClientId()))
                 .flatMap(clientPhoneNumbers -> {
                     return clientPhoneNumberService.saveAll(clientPhoneNumbers);
@@ -92,7 +93,7 @@ public class ClientService {
         return Optional.ofNullable(clientDto.getPhoneNumbers()).orElse(Collections.emptyList());
     }
 
-    private List<ClientAddressEntity> converClientAddressesDtoToEntity(List<ClientAddressDto> clientAddresses,
+    private List<ClientAddressEntity> converToClientAddressesEntityList(List<ClientAddressDto> clientAddresses,
             String clientId) {
         return clientAddresses.stream().map(clientAddressDto -> {
             return ClientAddressEntity.builder()
@@ -108,7 +109,7 @@ public class ClientService {
         }).toList();
     }
 
-    private List<ClientPhoneNumberEntity> convertClientPhoneNumbersDtoToEntity(
+    private List<ClientPhoneNumberEntity> convertToPhoneNumberEntityList(
             List<ClientPhoneNumberDto> clientPhoneNumbers, String clientId) {
         return clientPhoneNumbers.stream().map(clientPhoneNumber -> {
             return ClientPhoneNumberEntity.builder()

@@ -4,10 +4,18 @@ import com.fascinatingcloudservices.usa4foryou.entity.ClientAddressEntity;
 import com.fascinatingcloudservices.usa4foryou.entity.ClientEntity;
 import com.fascinatingcloudservices.usa4foryou.exceptions.ClientNotFoundException;
 import com.fascinatingcloudservices.usa4foryou.model.ClientDto;
+import com.fascinatingcloudservices.usa4foryou.model.NoteDto;
 import com.fascinatingcloudservices.usa4foryou.service.ClientService;
+import com.fascinatingcloudservices.usa4foryou.service.NoteService;
+import com.fascinatingcloudservices.usa4foryou.utils.NoteMapper;
+
 import jakarta.validation.Valid;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -21,11 +29,12 @@ import java.util.Optional;
 @RequestMapping("/api/clients")
 public class ClientController {
 
-    private final ClientService clientService;
-
-    public ClientController(ClientService clientService) {
-        this.clientService = clientService;
-    }
+    @Autowired
+    private ClientService clientService;
+    @Autowired
+    private NoteService noteService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     // GET all clients
     @GetMapping
@@ -52,11 +61,35 @@ public class ClientController {
     // }x
 
     // POST a new client
+    @Transactional
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<ClientEntity> save(@Valid @RequestBody ClientDto client) {
+    public Mono<ClientDto> save(@Valid @RequestBody ClientDto client) {
         return clientService
-                .createNewClient(client);
+                .createNewClient(client)
+                .map(clientEntity -> client.toBuilder().id(clientEntity.getId()).build())
+                .flatMap(clientDto -> {
+                    return Optional
+                            .ofNullable(client.getNotes())
+                            .map(notes -> {
+                                var notesMono = noteService
+                                        .createNotes(notes
+                                                .stream()
+                                                .map(note -> {
+                                                    return note
+                                                            .toBuilder()
+                                                            .clientId(clientDto.getId())
+                                                            .build();
+                                                })
+                                                .toList())
+                                        .map(NoteMapper::convertToDtoList)
+                                        .map(noteDtos -> clientDto.toBuilder()
+                                                .notes(noteDtos)
+                                                .build());
+                                return notesMono;
+                            })
+                            .orElse(Mono.just(clientDto));
+                });
     }
 
     // PUT to update an existing client
