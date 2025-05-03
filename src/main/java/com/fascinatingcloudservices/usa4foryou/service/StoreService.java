@@ -33,7 +33,7 @@ public class StoreService {
 
   public Mono<StoreEntity> createNewStore(String storeName) {
     var storeEntity = StoreEntity.builder()
-        .storeId(RandomIdGenerator.generateRandomId(3))
+        .storeId(RandomIdGenerator.generateRandomId(10))
         .name(storeName)
         .isNew(true)
         .build();

@@ -2,14 +2,12 @@ package com.fascinatingcloudservices.usa4foryou.model;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class ClientAddressDto {
-    @Id
     private String clientAddressId;
     private String clientId;
 

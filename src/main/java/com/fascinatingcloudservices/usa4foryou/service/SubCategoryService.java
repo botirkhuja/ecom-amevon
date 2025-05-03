@@ -47,7 +47,7 @@ public class SubCategoryService {
         return repo.findById(categoryId)
                 .map(category -> {
                     return subCategory.toBuilder()
-                            .subCategoryId(RandomIdGenerator.generateRandomId(4))
+                            .subCategoryId(RandomIdGenerator.generateRandomId(10))
                             .categoryId(categoryId)
                             .isNew(true)
                             .build();

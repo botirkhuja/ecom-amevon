@@ -31,12 +31,19 @@ public class ClientPhoneNumberService {
     // }
 
     public Mono<ClientPhoneNumberEntity> save(ClientPhoneNumberEntity client) {
-        client.setClientPhoneNumberId(RandomIdGenerator.generateRandomId(6));
+        client.setClientPhoneNumberId(RandomIdGenerator.generateRandomId(10));
         return repo.save(client).retry(3);
     }
 
     public Flux<ClientPhoneNumberEntity> saveAll(Iterable<ClientPhoneNumberEntity> clients) {
         return repo.saveAll(clients);
+    }
+    
+    public Mono<ClientPhoneNumberEntity> findById(String clientId) {
+        return RetryUtils.retry(() -> repo.findById(clientId));
+    }
+    public Mono<ClientPhoneNumberEntity> findByPhoneNumber(String phoneNumber) {
+        return repo.findByPhoneNumber(phoneNumber);
     }
 
     public void deleteById(String clientId) {

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 public class ClientPhoneNumberDto {
   private String clientPhoneNumberId;
+  private String clientId;
   @NotNull(message = "Phone number is mandatory")
   private String phoneNumber;
   @NotNull(message = "Phone country code is mandatory")

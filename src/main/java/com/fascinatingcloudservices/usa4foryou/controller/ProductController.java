@@ -1,7 +1,7 @@
 package com.fascinatingcloudservices.usa4foryou.controller;
 
 import com.fascinatingcloudservices.usa4foryou.entity.ProductEntity;
-import com.fascinatingcloudservices.usa4foryou.model.IdDto;
+import com.fascinatingcloudservices.usa4foryou.model.IdNameDto;
 import com.fascinatingcloudservices.usa4foryou.model.ProductDto;
 import com.fascinatingcloudservices.usa4foryou.service.BrandService;
 import com.fascinatingcloudservices.usa4foryou.service.CategoryService;
@@ -134,7 +134,7 @@ public class ProductController {
         return brandService.findById(brandId)
                 .map(brand -> {
                     return productDto.toBuilder()
-                            .brand(modelMapper.map(brand, IdDto.class))
+                            .brand(modelMapper.map(brand, IdNameDto.class))
                             .build();
                 });
     }
@@ -143,7 +143,7 @@ public class ProductController {
         return categoryService.findById(categoryId)
                 .map(category -> {
                     return productDto.toBuilder()
-                            .category(modelMapper.map(category, IdDto.class))
+                            .category(modelMapper.map(category, IdNameDto.class))
                             .build();
                 });
     }
@@ -152,7 +152,7 @@ public class ProductController {
         return subCategoryService.findById(subCategoryId)
                 .map(subCategory -> {
                     return productDto.toBuilder()
-                            .subCategory(modelMapper.map(subCategory, IdDto.class))
+                            .subCategory(modelMapper.map(subCategory, IdNameDto.class))
                             .build();
                 });
     }

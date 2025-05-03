@@ -26,7 +26,7 @@ public class DiscountService {
 
   public Mono<DiscountEntity> createDiscount(DiscountEntity discount) {
     return discountRepository.save(discount.toBuilder()
-        .discountId(RandomIdGenerator.generateRandomId(6))
+        .discountId(RandomIdGenerator.generateRandomId(10))
         .isNew(true).build());
   }
 

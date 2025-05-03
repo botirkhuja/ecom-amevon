@@ -1,9 +1,9 @@
 package com.fascinatingcloudservices.usa4foryou.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class EntitySharedProperties {
-  public Timestamp createdAt = null;
-  public Timestamp updatedAt = null;
+  public LocalDateTime createdAt = null;
+  public LocalDateTime updatedAt = null;
   public Boolean isDeleted = null;
 }

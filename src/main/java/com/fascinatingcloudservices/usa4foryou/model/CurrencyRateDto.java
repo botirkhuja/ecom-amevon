@@ -13,7 +13,7 @@ import lombok.Setter;
 @Builder(toBuilder = true)
 public class CurrencyRateDto {
     @NotNull(message = "Currency rate ID is mandatory")
-    private String currencyRateId;
+    private String id;
     private String isoCode;
     private Double rate;
     private String name;

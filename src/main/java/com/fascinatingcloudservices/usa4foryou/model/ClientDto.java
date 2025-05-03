@@ -2,6 +2,9 @@ package com.fascinatingcloudservices.usa4foryou.model;
 
 import com.fascinatingcloudservices.usa4foryou.entity.ClientPhoneNumberEntity;
 import com.fascinatingcloudservices.usa4foryou.utils.RandomIdGenerator;
+import com.fascinatingcloudservices.usa4foryou.validations.AllLevelsValidation;
+import com.fascinatingcloudservices.usa4foryou.validations.MediumLevelsValidation;
+import com.fascinatingcloudservices.usa4foryou.validations.NameOnlyValidation;
 import com.fasterxml.jackson.annotation.JsonKey;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,12 +17,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.relational.core.mapping.Table;
-
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 @Getter
@@ -29,8 +26,9 @@ import java.util.List;
 @NoArgsConstructor
 public class ClientDto {
     @Id
-    private String clientId;
-    @NotNull(message = "Name is mandatory")
+    @NotNull(message = "Client ID is mandatory", groups = {AllLevelsValidation.class, MediumLevelsValidation.class})
+    private String id;
+    @NotNull(message = "Name is mandatory", groups = {AllLevelsValidation.class, MediumLevelsValidation.class, NameOnlyValidation.class})
     @Size(min = 1, max = 255, message = "Name must be between 1 and 255 characters")
     private String name;
     // private List<ClientNote> notes;

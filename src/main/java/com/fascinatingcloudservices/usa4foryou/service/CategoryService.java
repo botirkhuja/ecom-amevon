@@ -32,7 +32,7 @@ public class CategoryService {
 
     public Mono<CategoryEntity> createCategory(CategoryEntity category) {
         return repo.save(category.toBuilder()
-                .categoryId(RandomIdGenerator.generateRandomId(4))
+                .categoryId(RandomIdGenerator.generateRandomId(10))
                 .isNew(true)
                 .build());
     }
@@ -56,7 +56,7 @@ public class CategoryService {
         return repo.findById(categoryId)
                 .map(category -> {
                     return subCategory.toBuilder()
-                            .subCategoryId(RandomIdGenerator.generateRandomId(4))
+                            .subCategoryId(RandomIdGenerator.generateRandomId(10))
                             .categoryId(categoryId)
                             .isNew(true)
                             .build();

@@ -42,7 +42,7 @@ public class PictureService {
 
     public Mono<Picture> createPicture(Picture picture) {
         return repo.save(picture.toBuilder()
-                .pictureId(RandomIdGenerator.generateRandomId(7))
+                .pictureId(RandomIdGenerator.generateRandomId(20))
                 .isNew(true)
                 .build());
     }
@@ -53,22 +53,12 @@ public class PictureService {
                     throw new RuntimeException("Failed to upload image.", e);
                 }).flatMap(imgUrl -> {
                     return repo.save(Picture.builder()
-                            .pictureId(RandomIdGenerator.generateRandomId(7))
+                            .pictureId(RandomIdGenerator.generateRandomId(20))
                             .url(imgUrl)
                             .productId(productId)
                             .storeId(storeId)
                             .isNew(true)
                             .build());
                 });
-        // try {
-        //     String imageUrl = imageStorageService.uploadImage(imageFile);
-        //     return repo.save(Picture.builder()
-        //             .pictureId(RandomIdGenerator.generateRandomId(7))
-        //             .url(imageUrl)
-        //             .isNew(true)
-        //             .build());
-        // } catch (Exception e) {
-        //     throw new RuntimeException("Failed to save image.", e);
-        // }
     }
 }

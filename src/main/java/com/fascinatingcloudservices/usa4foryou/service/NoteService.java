@@ -38,7 +38,7 @@ public class NoteService {
                 .clientId(note.getClientId())
                 .orderId(note.getOrderId())
                 .note(note.getNote())
-                .noteId(RandomIdGenerator.generateRandomId(6))
+                .noteId(RandomIdGenerator.generateRandomId(20))
                 .isNew(true)
                 .build();
         return repo.save(noteEntity);

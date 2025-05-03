@@ -1,7 +1,7 @@
 package com.fascinatingcloudservices.usa4foryou.entity;
 
-import java.math.BigDecimal;
-
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Table;
 
 import lombok.AllArgsConstructor;
@@ -16,12 +16,26 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 @Table(name = "order_items")
-public class OrderItem {
+public class OrderItem implements Persistable<String> {
   private String orderItemId;
   private String orderId;
   private String productId;
   private Integer quantity;
   private Double price;
   private String discountId;
+
+  @Transient
+  private boolean isNew;
+
+  @Override
+  public String getId() {
+      return this.orderItemId;
+  }
+
+  @Override
+  @Transient
+  public boolean isNew() {
+      return this.isNew;
+  }
 
 }

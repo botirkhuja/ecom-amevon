@@ -2,6 +2,7 @@ package com.fascinatingcloudservices.usa4foryou.controller;
 
 import com.fascinatingcloudservices.usa4foryou.entity.ClientAddressEntity;
 import com.fascinatingcloudservices.usa4foryou.entity.ClientEntity;
+import com.fascinatingcloudservices.usa4foryou.exceptions.ClientNotFoundException;
 import com.fascinatingcloudservices.usa4foryou.model.ClientDto;
 import com.fascinatingcloudservices.usa4foryou.service.ClientService;
 import jakarta.validation.Valid;
@@ -38,7 +39,8 @@ public class ClientController {
     @ResponseStatus(HttpStatus.OK)
     public Mono<ClientEntity> getClientById(@PathVariable String clientId) {
         return clientService
-                .findById(clientId);
+                .findById(clientId)
+                .switchIfEmpty(Mono.error(new ClientNotFoundException(clientId)));
     }
 
     // @GetMapping("/{clientId}/address")

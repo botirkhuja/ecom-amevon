@@ -30,14 +30,14 @@ public class ProductDto {
 
   @Valid
   @NotNull(message = "Category is mandatory")
-  private IdDto category;
+  private IdNameDto category;
 
   @Valid
   @NotNull(message = "Brand is mandatory")
-  private IdDto brand;
+  private IdNameDto brand;
 
   @Valid
-  private IdDto subCategory;
+  private IdNameDto subCategory;
 
   @NotNull(message = "Price is mandatory")
   @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")

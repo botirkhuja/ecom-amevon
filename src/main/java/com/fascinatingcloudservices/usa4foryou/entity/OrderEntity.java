@@ -1,6 +1,6 @@
 package com.fascinatingcloudservices.usa4foryou.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -22,8 +22,9 @@ import lombok.Setter;
 public class OrderEntity extends EntitySharedProperties implements Persistable<String> {
   @Id
   private String orderId;
+  private String orderTypeId;
   private String clientId;
-  private Timestamp orderDate;
+  private LocalDateTime orderDate;
   private Double totalPrice;
   private String orderDiscountId;
   private String currencyRateId;
@@ -31,7 +32,6 @@ public class OrderEntity extends EntitySharedProperties implements Persistable<S
   private String shippingAddressId;
   private Double shippingFee;
   private String contactPhoneNumberId;
-  private String orderTypeId;
   private Double taxAmount;
   private String storeId;
 

@@ -22,7 +22,7 @@ public class ProductService {
 
     public Mono<ProductEntity> insertNewProduct(ProductEntity product) {
         ProductEntity productEntity = product.toBuilder()
-                .productId(RandomIdGenerator.generateRandomId(8))
+                .productId(RandomIdGenerator.generateRandomId(20))
                 .isNew(true)
                 .build();
         return repo.save(productEntity);

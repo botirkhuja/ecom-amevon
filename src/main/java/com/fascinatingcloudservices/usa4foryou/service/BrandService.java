@@ -25,7 +25,7 @@ public class BrandService {
 
     public BrandEntity createBrandInstance(String name) {
         return BrandEntity.builder()
-                .brandId(RandomIdGenerator.generateRandomId(3))
+                .brandId(RandomIdGenerator.generateRandomId(10))
                 .name(name)
                 .isNew(true)
                 .build();

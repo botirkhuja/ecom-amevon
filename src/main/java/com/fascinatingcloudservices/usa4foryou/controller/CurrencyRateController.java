@@ -24,12 +24,12 @@ public class CurrencyRateController {
                 .map(this::convertToDto);
     }
 
-    private CurrencyRateDto convertToDto(CurrencyRateEntity currencyRateDto) {
+    private CurrencyRateDto convertToDto(CurrencyRateEntity currencyRateEntity) {
         return CurrencyRateDto.builder()
-                .currencyRateId(currencyRateDto.getCurrencyRateId())
-                .isoCode(currencyRateDto.getIsoCode())
-                .name(currencyRateDto.getName())
-                .rate(currencyRateDto.getRate())
+                .id(currencyRateEntity.getCurrencyRateId())
+                .isoCode(currencyRateEntity.getIsoCode())
+                .name(currencyRateEntity.getName())
+                .rate(currencyRateEntity.getRate())
                 .build();
     }
 }

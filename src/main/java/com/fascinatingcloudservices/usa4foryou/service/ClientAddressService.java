@@ -1,15 +1,11 @@
 package com.fascinatingcloudservices.usa4foryou.service;
 
 import com.fascinatingcloudservices.usa4foryou.entity.ClientAddressEntity;
-import com.fascinatingcloudservices.usa4foryou.model.ClientAddressDto;
 import com.fascinatingcloudservices.usa4foryou.repository.ClientAddressRepository;
-import com.fascinatingcloudservices.usa4foryou.utils.RandomIdGenerator;
-import com.fascinatingcloudservices.usa4foryou.utils.RetryUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,9 +21,9 @@ public class ClientAddressService {
     //     return repo.findAll();
     // }
 
-    // public Mono<ClientAddressDto> findById(String id) {
-    //     return repo.findById(id);
-    // }
+    public Mono<ClientAddressEntity> findById(String id) {
+        return repo.findById(id);
+    }
 
     public Flux<ClientAddressEntity> findAllByClientId(String clientId) {
         return repo.findByClientId(clientId);

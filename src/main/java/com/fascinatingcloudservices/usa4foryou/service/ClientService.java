@@ -43,8 +43,7 @@ public class ClientService {
     }
 
     public Mono<ClientEntity> findById(String clientId) {
-        return clientRepository.findById(clientId)
-                .switchIfEmpty(Mono.error(new ClientNotFoundException(clientId)));
+        return clientRepository.findById(clientId);
     }
 
     // public Flux<ClientAddressEntity> findAddressesById(String clientId) {
@@ -56,18 +55,18 @@ public class ClientService {
     public Mono<ClientEntity> createNewClient(ClientDto client) {
         ClientEntity clientEntity = ClientEntity.builder()
                 .name(client.getName())
-                .client_id(RandomIdGenerator.generateRandomId(6))
+                .clientId(RandomIdGenerator.generateRandomId(20))
                 .build();
 
         return clientRepository
                 .save(clientEntity)
                 .map(clientEntity1 -> converClientAddressesDtoToEntity(getClientAddressesList(client),
-                        clientEntity1.getClient_id()))
+                        clientEntity1.getClientId()))
                 .flatMapMany(clientAddresses -> {
                     return clientAddressService.saveAll(clientAddresses);
                 })
                 .map(x -> convertClientPhoneNumbersDtoToEntity(getClientPhoneNumberssList(client),
-                        clientEntity.getClient_id()))
+                        clientEntity.getClientId()))
                 .flatMap(clientPhoneNumbers -> {
                     return clientPhoneNumberService.saveAll(clientPhoneNumbers);
                 })
@@ -97,7 +96,7 @@ public class ClientService {
             String clientId) {
         return clientAddresses.stream().map(clientAddressDto -> {
             return ClientAddressEntity.builder()
-                    .clientAddressId(RandomIdGenerator.generateRandomId(6))
+                    .clientAddressId(RandomIdGenerator.generateRandomId(10))
                     .street(clientAddressDto.getStreet())
                     .city(clientAddressDto.getCity())
                     .state(clientAddressDto.getState())
@@ -113,7 +112,7 @@ public class ClientService {
             List<ClientPhoneNumberDto> clientPhoneNumbers, String clientId) {
         return clientPhoneNumbers.stream().map(clientPhoneNumber -> {
             return ClientPhoneNumberEntity.builder()
-                    .clientPhoneNumberId(RandomIdGenerator.generateRandomId(6))
+                    .clientPhoneNumberId(RandomIdGenerator.generateRandomId(10))
                     .phoneNumber(clientPhoneNumber.getPhoneNumber())
                     .phoneCountryCode(clientPhoneNumber.getPhoneCountryCode())
                     .clientId(clientId)

@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class ClientEntity implements Persistable<String> {
   @Id
   @JsonProperty("clientId")
-  private String client_id;
+  private String clientId;
   private String name;
 
   @JsonIgnore
@@ -35,11 +35,11 @@ public class ClientEntity implements Persistable<String> {
   @Override
   @Transient
   public boolean isNew() {
-    return createdAt == null || client_id == null;
+    return createdAt == null || clientId == null;
   }
 
   public String getId() {
-    return client_id;
+    return clientId;
   }
 
   @JsonIgnore
