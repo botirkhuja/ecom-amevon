@@ -24,7 +24,7 @@ pipeline {
     stage('Build maven project using docker') {
       agent {
         docker {
-          image 'openjdk:25-bookworm'
+          image 'eclipse-temurin:21'
           // run as root user
           args '-u root'
           reuseNode true
