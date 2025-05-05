@@ -9,6 +9,7 @@ pipeline {
 
     MINIO_ACCESS_NAME = credentials('minio-access-key')
     MINIO_ACCESS_SECRET = credentials('minio-secret-key')
+    DB_URL = 'r2dbc:mariadb://192.168.50.226:3316/usa4foryou'
     dockerBuildImage = ''
     IMAGE_NAME = 'usa4foryou-app-build'
     CONTAINER_NAME = 'botirkhuja/usa4foryou-java-backend'
