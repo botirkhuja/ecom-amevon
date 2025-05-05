@@ -38,7 +38,7 @@ pipeline {
       }
     }
 
-    stage('List items') {
+    stage('List items after build') {
       steps {
         sh 'ls'
       }
