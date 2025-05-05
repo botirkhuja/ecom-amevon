@@ -23,7 +23,10 @@ pipeline {
 
     stage('Build maven project') {
       agent {
-        docker 'openjdk:25-bookworm'
+        docker {
+          image 'openjdk:25-bookworm'
+          reuseNode true
+        }
       }
       steps {
         script {
