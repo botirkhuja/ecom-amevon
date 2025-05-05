@@ -10,7 +10,7 @@ pipeline {
     MINIO_ACCESS_NAME = credentials('minio-access-key')
     MINIO_ACCESS_SECRET = credentials('minio-secret-key')
     dockerBuildImage = ''
-    IMAGE_NAME = 'angular-app-build'
+    IMAGE_NAME = 'usa4foryou-app-build'
     CONTAINER_NAME = 'botirkhuja/usa4foryou-java-backend'
   }
   agent any
@@ -28,7 +28,6 @@ pipeline {
           // run as root user
           args '-u root'
           reuseNode true
-
         }
       }
       steps {
@@ -37,7 +36,13 @@ pipeline {
           sh './mvnw clean package -DskipTests'
         }
       }
-        }
+    }
+
+    stage('List items') {
+      steps {
+        sh 'ls'
+      }
+    }
 
         stage('Build Docker Image') {
       steps {
@@ -58,23 +63,6 @@ pipeline {
               }
             }
           }
-        }
-
-        stage('Run Docker Container') {
-      steps {
-        script {
-          // Run the container to produce the build artifacts
-          sh "docker run --name ${CONTAINER_NAME} ${IMAGE_NAME}"
-        }
-      }
-        }
-
-        stage('Remove docker container') {
-      steps {
-        script {
-          sh "docker rm ${CONTAINER_NAME}"
-        }
-      }
         }
 
         stage('Delete deployed image') {
@@ -101,4 +89,4 @@ pipeline {
         sh 'docker rmi $(docker images -q) || true'
         cleanWs()
     }
-}
+    }
