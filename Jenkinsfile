@@ -25,7 +25,10 @@ pipeline {
       agent {
         docker {
           image 'openjdk:25-bookworm'
+          // run as root user
+          args '-u root'
           reuseNode true
+
         }
       }
       steps {
