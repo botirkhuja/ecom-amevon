@@ -40,7 +40,8 @@ pipeline {
 
     stage('List items after build') {
       steps {
-        sh 'ls'
+        sh 'ls -la'
+        sh 'ls -la target'
       }
     }
 
