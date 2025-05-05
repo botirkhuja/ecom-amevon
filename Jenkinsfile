@@ -1,6 +1,5 @@
 pipeline {
   environment {
-    imagename = 'botirkhuja/usa-4-for-you-backend'
     registryCredential = 'docker-botirkhuja-password'
     DOCKER_IMAGE = 'openjdk:25-bookworm'
     MINIO_URL = 'https://minios3.local.gulruz.com'
@@ -11,7 +10,7 @@ pipeline {
     MINIO_ACCESS_SECRET = credentials('minio-secret-key')
     DB_URL = 'r2dbc:mariadb://192.168.50.226:3316/usa4foryou'
     dockerBuildImage = ''
-    IMAGE_NAME = 'usa4foryou-app-build'
+    IMAGE_NAME = 'botirkhuja/usa-4-for-you-backend'
     CONTAINER_NAME = 'botirkhuja/usa4foryou-java-backend'
   }
   agent any
