@@ -23,9 +23,7 @@ pipeline {
 
     stage('Build maven project') {
       agent {
-        docker {
-          image "${DOCKER_IMAGE}"
-        }
+        docker 'openjdk:25-bookworm'
       }
       steps {
         script {
