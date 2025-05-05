@@ -31,7 +31,7 @@ pipeline {
       steps {
         script {
           // Build the Maven project
-          sh 'mvn clean package -DskipTests'
+          sh './mvnw clean package -DskipTests'
         }
       }
         }
