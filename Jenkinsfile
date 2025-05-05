@@ -23,7 +23,9 @@ pipeline {
 
     stage('Build maven project') {
       agent {
-        docker DOCKER_IMAGE
+        docker {
+          image "${DOCKER_IMAGE}"
+        }
       }
       steps {
         script {
