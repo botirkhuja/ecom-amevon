@@ -75,9 +75,7 @@ pipeline {
           }
         }
   }
-}
-
-    post {
+      post {
     success {
       echo 'Build completed successfully.'
     }
@@ -91,3 +89,6 @@ pipeline {
         cleanWs()
     }
     }
+}
+
+
