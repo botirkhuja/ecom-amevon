@@ -66,7 +66,7 @@ pipeline {
           }
         }
 
-        stage('Delete deployed image') {
+        stage('Delete pushed image') {
           steps {
             script {
               sh "docker rmi ${IMAGE_NAME}:${BUILD_NUMBER}"
@@ -74,6 +74,19 @@ pipeline {
             }
           }
         }
+
+      stage('Deploy to Server') {
+        steps {
+          script {
+            cd ansible
+            ansiblePlaybook credentialsId: 'usa4foryou-springboot-key',
+                                 disableHostKeyChecking: true,
+                                 installation: 'Ansible',
+                                 inventory: 'inventory.yaml',
+                                 playbook: 'playbook.yml'
+          }
+        }
+    }
   }
       post {
     success {
