@@ -11,8 +11,19 @@
         state: present
         image: botirkhuja/usa-4-for-you-backend:latest
         recreate: true
+        comparisons:
+          image: strict
         ports:
           - 8083:8083
+        env:
+          DB_URL: "{{ lookup('env', 'DB_URL') }}"
+          DB_USERNAME: "{{ lookup('env', 'DB_USERNAME') }}"
+          DB_PASSWORD: "{{ lookup('env', 'DB_PASSWORD') }}"
+          DB_LOGGING: "INFO"
+          MINIO_URL: "{{ lookup('env', 'MINIO_URL') }}"
+          MINIO_ACCESS_NAME: "{{ lookup('env', 'MINIO_ACCESS_NAME') }}"
+          MINIO_ACCESS_SECRET: "{{ lookup('env', 'MINIO_ACCESS_SECRET') }}"
+          MINIO_BUCKET_NAME: "{{ lookup('env', 'MINIO_BUCKET_NAME') }}"
 
     - name: Show results
       ansible.builtin.debug:
