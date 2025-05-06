@@ -77,16 +77,13 @@ pipeline {
 
       stage('Deploy to Server') {
         steps {
-          script {
-            cd ansible
             ansiblePlaybook credentialsId: 'usa4foryou-springboot-key',
                                  disableHostKeyChecking: true,
                                  installation: 'Ansible',
-                                 inventory: 'inventory.yaml',
-                                 playbook: 'playbook.yml'
-          }
+                                 inventory: 'ansible/inventory.yaml',
+                                 playbook: 'ansible/playbook.yml'
         }
-    }
+      }
   }
       post {
     success {
@@ -101,7 +98,5 @@ pipeline {
         sh 'docker rmi $(docker images -q) || true'
         cleanWs()
     }
-    }
+      }
 }
-
-
