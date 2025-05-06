@@ -22,4 +22,6 @@ ARG JAR_FILE=target/*.jar
 
 COPY ${JAR_FILE} app.jar
 
+HEALTHCHECK CMD curl --fail http://localhost:8083/api/health || exit 1
+
 ENTRYPOINT ["java","-jar","app.jar"]

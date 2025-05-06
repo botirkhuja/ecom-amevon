@@ -8,9 +8,9 @@
       register: output
       community.docker.docker_container:
         name: usa4foryou-backend
-        # state: present
+        state: healthy
         image: botirkhuja/usa-4-for-you-backend:latest
-        # recreate: true
+        recreate: true
         comparisons:
           image: strict
         ports:
@@ -24,6 +24,13 @@
           MINIO_ACCESS_NAME: "{{ lookup('env', 'MINIO_ACCESS_NAME') }}"
           MINIO_ACCESS_SECRET: "{{ lookup('env', 'MINIO_ACCESS_SECRET') }}"
           MINIO_BUCKET_NAME: "{{ lookup('env', 'MINIO_BUCKET_NAME') }}"
+        healthcheck:
+          test: ["CMD", "curl", "-f", "http://localhost:8083/health"]
+          interval: 30s
+          timeout: 10s
+          retries: 3
+          start_period: 30s
+          healthy_wait_timeout: 10s
 
     - name: Show results
       ansible.builtin.debug:
