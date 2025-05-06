@@ -78,10 +78,11 @@ pipeline {
       stage('Deploy to Server') {
         steps {
             ansiblePlaybook credentialsId: 'usa4foryou-springboot-key',
-                                 disableHostKeyChecking: true,
-                                 installation: 'Ansible',
-                                 inventory: 'ansible/inventory.yaml',
-                                 playbook: 'ansible/playbook.yaml'
+                                disableHostKeyChecking: true,
+                                installation: 'ansible',
+                                sudoUser: 'ubuntu',
+                                inventory: 'ansible/inventory.yaml',
+                                playbook: 'ansible/playbook.yaml'
         }
       }
   }
