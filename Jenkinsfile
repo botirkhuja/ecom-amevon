@@ -97,6 +97,8 @@ pipeline {
         sh 'docker stop $(docker ps -a -q) || true'
         sh 'docker rm $(docker ps -a -q) || true'
         sh 'docker rmi $(docker images -q) || true'
+        sh 'docker volume prune -f'
+        sh 'docker buildx prune -f'
         cleanWs()
     }
       }
