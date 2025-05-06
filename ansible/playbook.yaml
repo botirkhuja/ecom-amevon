@@ -8,9 +8,9 @@
       register: output
       community.docker.docker_container:
         name: usa4foryou-backend
-        state: present
+        # state: present
         image: botirkhuja/usa-4-for-you-backend:latest
-        recreate: true
+        # recreate: true
         comparisons:
           image: strict
         ports:
