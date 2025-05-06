@@ -1,0 +1,20 @@
+---
+- name: Deploy docker app on server
+  hosts:
+    - usa4foryou-server
+  become: true
+  tasks:
+    - name: Container present
+      register: output
+      community.docker.docker_container:
+        name: usa4foryou-backend
+        state: present
+        image: botirkhuja/usa-4-for-you-backend:latest
+        recreate: true
+        ports:
+          - 8083:8083
+
+    - name: Show results
+      ansible.builtin.debug:
+        var: output
+        
