@@ -8,6 +8,7 @@
       register: output
       community.docker.docker_container:
         name: usa4foryou-backend
+        pull: always
         state: healthy
         image: botirkhuja/usa-4-for-you-backend:latest
         recreate: true
