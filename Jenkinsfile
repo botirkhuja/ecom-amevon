@@ -8,7 +8,11 @@ pipeline {
 
     MINIO_ACCESS_NAME = credentials('minio-access-key')
     MINIO_ACCESS_SECRET = credentials('minio-secret-key')
-    DB_URL = 'r2dbc:mariadb://192.168.50.226:3316/usa4foryou'
+    DB_URL = 'r2dbc:mariadb://192.168.50.226:3306/my-maria-database'
+    DB_CREDENTIALS = credentials('mariadb-credentials')
+    DB_USERNAME = "$DB_CREDENTIALS_USR"
+    DB_PASSWORD = "$DB_CREDENTIALS_PSW"
+
     dockerBuildImage = ''
     IMAGE_NAME = 'botirkhuja/usa-4-for-you-backend'
     CONTAINER_NAME = 'botirkhuja/usa4foryou-java-backend'
