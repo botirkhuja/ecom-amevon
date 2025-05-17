@@ -47,7 +47,7 @@ public class ProductController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<ProductDto> createProduct(@RequestBody @Valid ProductDto product) {
-        return productService.insertNewProduct(convertToEntity(product)).flatMap(this::convertToDto);
+        return productService.createProduct(convertToEntity(product)).flatMap(this::convertToDto);
     }
 
     @GetMapping("/{productId}")
@@ -63,7 +63,7 @@ public class ProductController {
         return productService.findById(id)
                 .flatMap(product1 -> {
                     product.setProductId(id);
-                    return productService.insertNewProduct(product);
+                    return productService.createProduct(product);
                 })
                 .map(savedProduct -> new ResponseEntity<>(savedProduct, HttpStatus.OK))
                 .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -97,9 +97,6 @@ public class ProductController {
                     return addRelatedItems(productDto, product);
                 });
     }
-    // private Mono<ProductEntity> convertToEntity(ProductDto productDto) {
-    // return Mono.just(modelMapper.map(productDto, ProductEntity.class));
-    // }
 
     private Mono<ProductDto> addRelatedItems(ProductDto productDto, ProductEntity product) {
         Boolean isBrandIdAvailable = product.getBrandId() != null;

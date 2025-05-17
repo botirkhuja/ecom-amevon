@@ -1,6 +1,7 @@
 package com.fascinatingcloudservices.usa4foryou.controller;
 
 import com.fascinatingcloudservices.usa4foryou.entity.BrandEntity;
+import com.fascinatingcloudservices.usa4foryou.exceptions.NotFoundException;
 import com.fascinatingcloudservices.usa4foryou.model.BrandDto;
 import com.fascinatingcloudservices.usa4foryou.model.NameDto;
 import com.fascinatingcloudservices.usa4foryou.service.BrandService;
@@ -29,9 +30,9 @@ public class BrandController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Flux<BrandDto> getAllBrands() {
+    public Flux<NameDto> getAllBrands() {
         return brandService.findAll()
-        .map(this::convertToDto);
+                .map(this::convertToDto);
     }
 
     @GetMapping("/{id}")
@@ -42,8 +43,8 @@ public class BrandController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<BrandEntity> createBrand(@Valid @RequestBody NameDto brandPostRequest) {
-        return brandService.createNewBrand(brandPostRequest);
+    public Mono<NameDto> createBrand(@Valid @RequestBody NameDto brandPostRequest) {
+        return brandService.createNewBrand(brandPostRequest).map(this::convertToDto);
     }
 
     @PutMapping("/{id}")
@@ -53,16 +54,16 @@ public class BrandController {
     }
 
     @GetMapping("/search")
-    public Mono<ResponseEntity<BrandEntity>> searchByName(
+    public Mono<NameDto> searchByName(
             @RequestParam String name,
             @RequestParam(required = false, defaultValue = "false") boolean caseSensitive) {
         return brandService.findByBrandName(name, caseSensitive)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+                .map(this::convertToDto)
+                .switchIfEmpty(Mono.error(new NotFoundException("Brand not found ")));
     }
 
-    private BrandDto convertToDto(BrandEntity brand) {
-        return modelMapper.map(brand, BrandDto.class);
+    private NameDto convertToDto(BrandEntity brand) {
+        return modelMapper.map(brand, NameDto.class);
     }
 
 }

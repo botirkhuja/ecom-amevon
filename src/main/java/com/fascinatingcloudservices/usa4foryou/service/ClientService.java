@@ -46,17 +46,14 @@ public class ClientService {
         return clientRepository.findById(clientId);
     }
 
-    // public Flux<ClientAddressEntity> findAddressesById(String clientId) {
-    // return clientRepository.findAllAddressesForClient(clientId)
-    // .switchIfEmpty(Mono.error(new ClientNotFoundException(clientId)));
-    // }
-
     @Transactional
     public Mono<ClientEntity> createNewClient(ClientDto client) {
-        var clientId = Optional.ofNullable(client.getId()).orElse(RandomIdGenerator.generateRandomId(20));
         ClientEntity clientEntity = ClientEntity.builder()
                 .name(client.getName())
-                .clientId(clientId)
+                .clientId(Optional
+                        .ofNullable(client.getId())
+                        .orElse(RandomIdGenerator
+                                .generateRandomId(20)))
                 .build();
 
         return clientRepository

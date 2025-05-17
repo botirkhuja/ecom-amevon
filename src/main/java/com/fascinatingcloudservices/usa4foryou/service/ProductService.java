@@ -5,6 +5,9 @@ import com.fascinatingcloudservices.usa4foryou.exceptions.NotFoundException;
 import com.fascinatingcloudservices.usa4foryou.repository.ProductRepository;
 import com.fascinatingcloudservices.usa4foryou.utils.RandomIdGenerator;
 import com.fascinatingcloudservices.usa4foryou.utils.RetryUtils;
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -20,9 +23,12 @@ public class ProductService {
         return repo.findByIsDeletedFalse();
     }
 
-    public Mono<ProductEntity> insertNewProduct(ProductEntity product) {
+    public Mono<ProductEntity> createProduct(ProductEntity product) {
         ProductEntity productEntity = product.toBuilder()
-                .productId(RandomIdGenerator.generateRandomId(20))
+                .productId(Optional
+                        .ofNullable(product.getProductId())
+                        .orElse(RandomIdGenerator
+                                .generateRandomId(20)))
                 .isNew(true)
                 .build();
         return repo.save(productEntity);

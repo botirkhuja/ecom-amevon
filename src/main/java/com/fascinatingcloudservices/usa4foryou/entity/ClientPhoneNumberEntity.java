@@ -1,10 +1,5 @@
 package com.fascinatingcloudservices.usa4foryou.entity;
 
-import com.fascinatingcloudservices.usa4foryou.model.ClientDto;
-import com.fascinatingcloudservices.usa4foryou.utils.RandomIdGenerator;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +12,6 @@ import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 
 @Getter
 @Setter

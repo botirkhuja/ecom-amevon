@@ -13,6 +13,6 @@ public interface BrandRepository extends R2dbcRepository<BrandEntity, String> {
     Mono<BrandEntity> findByName(String name);
 
     // Find products whose name contains the given string (case-insensitive)
-    @Query("SELECT b FROM Brand b WHERE LOWER(b.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    // @Query("SELECT * FROM brands b WHERE LOWER(b.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     Mono<BrandEntity> findByNameContainingIgnoreCase(String name);
 }

@@ -154,4 +154,18 @@ public class GlobalExceptionHandler {
         response.put("message", e.getCause().getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
+
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDataIntegrityViolationException(Exception e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", System.currentTimeMillis());
+        response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        response.put("error", "Database Error");
+        response.put("message", "Cannot add or update a child row: a foreign key constraint fails");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    private String removeContentInBracketsFromString(String str) {
+        return str.replaceAll("\\[.*?\\]", "");
+    }
 }

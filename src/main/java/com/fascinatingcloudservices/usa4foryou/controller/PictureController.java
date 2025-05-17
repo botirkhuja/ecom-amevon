@@ -1,13 +1,11 @@
 package com.fascinatingcloudservices.usa4foryou.controller;
 
 import com.fascinatingcloudservices.usa4foryou.entity.Picture;
-import com.fascinatingcloudservices.usa4foryou.entity.ProductEntity;
 import com.fascinatingcloudservices.usa4foryou.model.PictureDto;
 import com.fascinatingcloudservices.usa4foryou.service.PictureService;
 import com.fascinatingcloudservices.usa4foryou.service.ProductService;
 
-import jakarta.validation.constraints.NotNull;
-
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,17 +22,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class PictureController {
 
     private final PictureService pictureService;
-    private final ProductService productService;
 
     public PictureController(PictureService pictureService, ProductService productService) {
         this.pictureService = pictureService;
-        this.productService = productService;
     }
 
     @GetMapping
-    public Flux<Picture> getAllByClientId() {
+    public Flux<PictureDto> getAllByClientId() {
         return pictureService
-                .findAll();
+                .findAll()
+                .map(this::convertToDto);
     }
 
     // @GetMapping
@@ -46,11 +43,10 @@ public class PictureController {
     // }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Picture>> getById(@PathVariable String id) {
+    public Mono<PictureDto> getById(@PathVariable String id) {
         return pictureService
                 .findById(id)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+                .map(this::convertToDto);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -79,11 +75,7 @@ public class PictureController {
                 .build();
     }
     private PictureDto convertToDto(Picture picture) {
-        return PictureDto.builder()
-                .id(picture.getPictureId())
-                .productId(picture.getProductId())
-                .storeId(picture.getStoreId())
-                .url(picture.getUrl())
-                .build();
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(picture, PictureDto.class);
     }
 }

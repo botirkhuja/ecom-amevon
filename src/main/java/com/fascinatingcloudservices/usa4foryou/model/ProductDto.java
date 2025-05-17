@@ -1,9 +1,6 @@
 package com.fascinatingcloudservices.usa4foryou.model;
 
-import java.math.BigDecimal;
-
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -40,8 +37,6 @@ public class ProductDto {
   private IdNameDto subCategory;
 
   @NotNull(message = "Price is mandatory")
-  @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
+  @DecimalMin(value = "0.0", inclusive = true, message = "Price must be greater than or equal to 0")
   private Double price;
-  
-
 }
