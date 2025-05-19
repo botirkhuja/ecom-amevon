@@ -13,7 +13,6 @@
         image: botirkhuja/usa-4-for-you-backend:latest
         recreate: true
         restart_policy: unless-stopped
-        restart_retries: 3
         comparisons:
           image: strict
         ports:
