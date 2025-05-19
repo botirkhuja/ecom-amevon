@@ -63,9 +63,11 @@ pipeline {
 
         stage('Push Image to Docker Registry') {
             steps {
-                docker.withRegistry('', registryCredential) {
-                    dockerBuildImage.push("$BUILD_NUMBER")
-                    dockerBuildImage.push('latest')
+                script {
+                    docker.withRegistry('', registryCredential) {
+                        dockerBuildImage.push("$BUILD_NUMBER")
+                        dockerBuildImage.push('latest')
+                    }
                 }
             }
         }
