@@ -18,6 +18,8 @@ pipeline {
     CONTAINER_NAME = 'botirkhuja/usa4foryou-java-backend'
   }
 
+  agent any
+
   stages {
     stage('List items') {
       steps {
