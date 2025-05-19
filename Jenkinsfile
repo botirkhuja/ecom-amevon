@@ -17,7 +17,7 @@ pipeline {
     IMAGE_NAME = 'botirkhuja/usa-4-for-you-backend'
     CONTAINER_NAME = 'botirkhuja/usa4foryou-java-backend'
   }
-  agent any
+
   stages {
     stage('List items') {
       steps {
@@ -27,12 +27,7 @@ pipeline {
 
     stage('Build maven project using docker') {
       agent {
-        docker {
-          image 'eclipse-temurin:21'
-          // run as root user
-          args '-u root'
-          reuseNode true
-        }
+        label 'jenkins-ubuntu-agent'
       }
       steps {
         script {
@@ -49,48 +44,48 @@ pipeline {
       }
     }
 
-        stage('Build Docker Image') {
-      steps {
-        script {
-          // Build Docker image from Dockerfile
-          // sh "docker build -f Dockerfile -t ${IMAGE_NAME} ."
-          dockerBuildImage = docker.build(IMAGE_NAME)
-        }
-      }
-        }
+    // stage('Build Docker Image') {
+    //   steps {
+    //     script {
+    //       // Build Docker image from Dockerfile
+    //       // sh "docker build -f Dockerfile -t ${IMAGE_NAME} ."
+    //       dockerBuildImage = docker.build(IMAGE_NAME)
+    //     }
+    //   }
+    // }
 
-        stage('Push Image to Docker Registry') {
-          steps {
-            script {
-              docker.withRegistry('', registryCredential) {
-                dockerBuildImage.push("$BUILD_NUMBER")
-                dockerBuildImage.push('latest')
-              }
-            }
-          }
-        }
+    // stage('Push Image to Docker Registry') {
+    //   steps {
+    //     script {
+    //       docker.withRegistry('', registryCredential) {
+    //         dockerBuildImage.push("$BUILD_NUMBER")
+    //         dockerBuildImage.push('latest')
+    //       }
+    //     }
+    //   }
+    // }
 
-        stage('Delete pushed image') {
-          steps {
-            script {
-              sh "docker rmi ${IMAGE_NAME}:${BUILD_NUMBER}"
-              sh "docker rmi ${IMAGE_NAME}:latest"
-            }
-          }
-        }
+    // stage('Delete pushed image') {
+    //   steps {
+    //     script {
+    //       sh "docker rmi ${IMAGE_NAME}:${BUILD_NUMBER}"
+    //       sh "docker rmi ${IMAGE_NAME}:latest"
+    //     }
+    //   }
+    // }
 
-      stage('Deploy to Server') {
-        steps {
-            ansiblePlaybook credentialsId: 'usa4foryou-springboot-key',
-                                disableHostKeyChecking: true,
-                                installation: 'ansible',
-                                sudoUser: 'ubuntu',
-                                inventory: 'ansible/inventory.yaml',
-                                playbook: 'ansible/playbook.yaml'
-        }
-      }
+      // stage('Deploy to Server') {
+      //   steps {
+      //       ansiblePlaybook credentialsId: 'usa4foryou-springboot-key',
+      //                           disableHostKeyChecking: true,
+      //                           installation: 'ansible',
+      //                           sudoUser: 'ubuntu',
+      //                           inventory: 'ansible/inventory.yaml',
+      //                           playbook: 'ansible/playbook.yaml'
+      //   }
+      // }
   }
-      post {
+  post {
     success {
       echo 'Build completed successfully.'
     }
@@ -98,12 +93,12 @@ pipeline {
       echo 'Build failed.'
     }
     always {
-        sh 'docker stop $(docker ps -a -q) || true'
-        sh 'docker rm $(docker ps -a -q) || true'
-        sh 'docker rmi $(docker images -q) || true'
-        sh 'docker volume prune -f'
-        sh 'docker buildx prune -f'
+        // sh 'docker stop $(docker ps -a -q) || true'
+        // sh 'docker rm $(docker ps -a -q) || true'
+        // sh 'docker rmi $(docker images -q) || true'
+        // sh 'docker volume prune -f'
+        // sh 'docker buildx prune -f'
         cleanWs()
     }
-      }
+  }
 }
